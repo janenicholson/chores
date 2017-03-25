@@ -15,6 +15,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.asana.Client;
 import com.asana.models.Project;
+import com.asana.models.Section;
 import com.asana.models.Task;
 import com.asana.models.User;
 import com.asana.models.Workspace;
@@ -40,7 +41,13 @@ public class AsanaConnection {
 	}
 
 	public Optional<Workspace> getWorkspace(String teamName) {
-		return getWorkspaces().stream().filter((team)->workspaceNamed(team, teamName)).findFirst();
+		Optional<Workspace> workspace = getWorkspaces().stream().filter((team)->workspaceNamed(team, teamName)).findFirst();
+		if (workspace.isPresent())
+			try {
+				return Optional.ofNullable(asana.workspaces.findById(workspace.get().id).execute());
+			} catch (IOException e) {
+			}
+		return Optional.empty();
 	}
 
 	private boolean workspaceNamed(Workspace team, String name) {
@@ -64,7 +71,12 @@ public class AsanaConnection {
 	}
 
 	public Optional<Project> getProject(Workspace workspace, String name) {
-		return getProjects(workspace).stream().filter((project)->projectNamed(project, name)).findFirst();
+		Optional<Project> project = getProjects(workspace).stream().filter((p)->projectNamed(p, name)).findFirst();
+		try {
+			return Optional.of(asana.projects.findById(project.get().id).execute());
+		} catch (IOException e) {
+		}
+		return Optional.empty();
 	}
 
 	private boolean projectNamed(Project project, String name) {
@@ -76,5 +88,34 @@ public class AsanaConnection {
 	}
 	private static boolean itMe(User user) {
 		return "Jane Nicholson".equalsIgnoreCase(user.name);
+	}
+
+	public Collection<Section> getSections(Optional<Project> project) {
+		try {
+			return asana.sections.findByProject(project.get().id).execute();
+		} catch (IOException e) {
+		}
+		return Collections.emptyList();
+	}
+
+	public Optional<Section> getSection(Optional<Project> project, String name) {
+		Optional<Section> section = getSections(project).stream().filter((s)->sectionName(s, name)).findFirst();
+		try {
+			return Optional.of(asana.sections.findById(section.get().id).execute());
+		} catch (IOException e) {
+		}
+		return Optional.empty();
+	}
+
+	private boolean sectionName(Section section, String name) {
+		return name.equalsIgnoreCase(section.name);
+	}
+
+	public Collection<Task> getTasks(Section section) {
+		try {
+			return asana.tasks.findBySection(section.id).execute();
+		} catch (IOException e) {
+		}
+		return Collections.emptyList();
 	}
 }
