@@ -34,4 +34,14 @@ public class ResetDailyChores {
 	private String getId(Task task) {
 		return task.id;
 	}
+
+	public void cheatReset() {
+		asana.getTasksBySection("169102700015582").stream()
+				.map(this::getDetails)
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.filter(this::isComplete)
+				.map(this::getId)
+				.forEach(asana::refreshTask);
+	}
 }
