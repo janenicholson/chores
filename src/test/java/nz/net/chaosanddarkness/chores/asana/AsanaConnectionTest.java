@@ -16,6 +16,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.asana.models.Project;
@@ -67,14 +68,14 @@ public class AsanaConnectionTest {
 	@Test
 	public void retrieve_sections() {
 		Optional<Project> project = asana.getProject(asana.getWorkspace("Chaos and Darkness").get(), "Chores");
-		Collection<Section> section = asana.getSections(project);
+		Collection<Section> section = asana.getSections(project.get());
 		assertThat(section, not(emptyCollectionOf(Section.class)));
 	}
 
 	@Test
 	public void retrieve_section() {
 		Optional<Project> project = asana.getProject(asana.getWorkspace("Chaos and Darkness").get(), "Chores");
-		Optional<Section> section = asana.getSection(project, "Daily");
+		Optional<Section> section = asana.getSection(project.get(), "Daily");
 		assertThat(section, isPresent());
 		assertThat(section.get().name, is("Daily"));
 		assertThat(section.get().projects, contains(projectWithId(project.get().id)));
@@ -104,8 +105,30 @@ public class AsanaConnectionTest {
 	@Test
 	public void retrieve_tasks_for_section() throws IOException {
 		Optional<Project> project = asana.getProject(asana.getWorkspace("Chaos and Darkness").get(), "Chores");
-		Optional<Section> section = asana.getSection(project, "Daily");
+		Optional<Section> section = asana.getSection(project.get(), "Daily");
 		Collection<Task> tasks = asana.getTasks(section.get());
 		assertThat(tasks, not(emptyCollectionOf(Task.class)));
+	}
+
+	@Test
+	public void retrieve_tasks_for_section_project_and_workspace() {
+		Collection<Task> tasks = asana.getTasks("Chaos and Darkness", "Chores", "Daily");
+		assertThat(tasks.size(), is(5));
+	}
+
+	@Test
+	public void retrieve_task_detail_by_id() {
+		Optional<Task> task = asana.getTask("303028668279780");
+		assertThat(task, isPresent());
+		assertThat(task.get().name, is("Water plants"));
+	}
+
+	@Test @Ignore // can't do this because it's modifying a real project in use. idiot
+	public void refresh_task() {
+		asana.refreshTask("303089274983564");
+		Optional<Task> task = asana.getTask("303089274983564");
+		assertThat(task, isPresent());
+		assertThat(task.get().name, is("Test task"));
+		assertThat(task.get().completed, is(false));
 	}
 }
