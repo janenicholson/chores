@@ -17,7 +17,6 @@ import com.asana.models.Workspace;
 import com.google.api.client.util.DateTime;
 
 public class AsanaConnection {
-	private static final String ASANA_TASKS = "https://app.asana.com/api/1.0/tasks";
 	private static final String ASANA_TOKEN_PROPERTY = "ASANA_TOKEN";
 	private final String token;
 	private final Client asana;
