@@ -29,7 +29,7 @@ public class AsanaConnectionTest {
 	AsanaConnection asana;
 	@Before
 	public void setup() {
-		asana = new AsanaConnection();
+		asana = new AsanaConnection(System.getProperty("ASANA_TOKEN"));
 	}
 
 	@Test

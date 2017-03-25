@@ -17,12 +17,9 @@ import com.asana.models.Workspace;
 import com.google.api.client.util.DateTime;
 
 public class AsanaConnection {
-	private static final String ASANA_TOKEN_PROPERTY = "ASANA_TOKEN";
-	private final String token;
 	private final Client asana;
 
-	public AsanaConnection() {
-		this.token = System.getProperty(ASANA_TOKEN_PROPERTY);
+	public AsanaConnection(String token) {
 		asana = Client.accessToken(token);
 	}
 
@@ -105,12 +102,16 @@ public class AsanaConnection {
 		return name.equalsIgnoreCase(section.name);
 	}
 
-	public Collection<Task> getTasks(Section section) {
+	public Collection<Task> getTasksBySection(String sectionId) {
 		try {
-			return asana.tasks.findBySection(section.id).execute();
+			return asana.tasks.findBySection(sectionId).execute();
 		} catch (IOException e) {
 		}
 		return emptyList();
+	}
+
+	public Collection<Task> getTasks(Section section) {
+		return getTasksBySection(section.id);
 	}
 
 	public Collection<Task> getTasks(String workspaceName, String projectName, String sectionName) {
