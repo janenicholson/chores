@@ -14,7 +14,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import com.asana.Client;
-import com.asana.dispatcher.AccessTokenDispatcher;
 import com.asana.models.Project;
 import com.asana.models.Task;
 import com.asana.models.User;
@@ -29,7 +28,7 @@ public class AsanaConnection {
 
 	public AsanaConnection() {
 		this.token = System.getProperty(ASANA_TOKEN_PROPERTY);
-		asana = new Client(new AccessTokenDispatcher(token));
+		asana = Client.accessToken(token);
 	}
 
 	public Collection<Workspace> getWorkspaces() {
