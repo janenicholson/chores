@@ -12,7 +12,7 @@ public class ChoreResetHandler implements RequestHandler<ChoreResetConfiguration
     public Void handleRequest(ChoreResetConfiguration config, Context context) {
         AsanaReader asanaReader = new AsanaReader(config.getToken());
         AsanaUpdater asanaUpdater = new AsanaUpdater(config.getToken());
-		new ResetDailyChores(asanaReader, asanaUpdater).resetSection(config.getDailySectionId());
+        new ResetDailyChores(asanaReader, asanaUpdater).resetSection(config.getDailySectionId());
         return null;
     }
 
