@@ -22,6 +22,10 @@ public class ChoreResetHandler implements RequestHandler<ChoreResetConfiguration
             if (resetWeeklyChoresTask.isMonday()) {
                 resetWeeklyChoresTask.resetSection(config.getWeeklySectionId());
             }
+            ResetMonthlyChoresTask resetMonthlyChoresTask = new ResetMonthlyChoresTask(asanaReader, asanaUpdater, now());
+            if (resetMonthlyChoresTask.isFirstDayOfMonth()) {
+                resetMonthlyChoresTask.resetSection(config.getMonthlySectionId());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
