@@ -9,7 +9,7 @@ public class ChoreResetHandler implements RequestHandler<ChoreResetConfiguration
 
     @Override
     public Void handleRequest(ChoreResetConfiguration config, Context context) {
-        new ResetDailyChores(new AsanaConnection(config.getToken())).cheatReset();
+        new ResetDailyChores(new AsanaConnection(config.getToken())).resetSection(config.getDailySectionId());
         return null;
     }
 

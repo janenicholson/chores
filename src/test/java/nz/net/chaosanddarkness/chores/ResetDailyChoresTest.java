@@ -59,14 +59,14 @@ public class ResetDailyChoresTest {
 	@Test
 	public void ask_asana_for_daily_tasks() {
 		ResetDailyChores chores = new ResetDailyChores(asana);
-		chores.reset("Daily");
+		chores.getSectionId("Daily");
 		verify(asana).getTasks(WORKSPACE, PROJECT, SECTION);
 	}
 
 	@Test
 	public void retrieve_tasks_returned_by_asana() {
 		ResetDailyChores chores = new ResetDailyChores(asana);
-		chores.reset("Daily");
+		chores.getSectionId("Daily");
 		verify(asana).getTask(TASK1.id);
 		verify(asana).getTask(TASK2.id);
 		verify(asana).getTask(TASK3.id);
@@ -77,7 +77,7 @@ public class ResetDailyChoresTest {
 	@Test
 	public void update_tasks_returned_by_asana_if_completed() {
 		ResetDailyChores chores = new ResetDailyChores(asana);
-		chores.reset("Daily");
+		chores.getSectionId("Daily");
 		verify(asana).refreshTask(TASK2.id);
 		verify(asana).refreshTask(TASK3.id);
 		verify(asana).refreshTask(TASK5.id);

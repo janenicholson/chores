@@ -13,7 +13,7 @@ public class ResetDailyChores {
 	private final String WORKSPACE = "Chaos and Darkness";
 	private final String PROJECT = "Chores";
 
-	public void reset(String string) {
+	public void getSectionId(String string) {
 		asana.getTasks(WORKSPACE, PROJECT, "Daily").stream()
 				.map(this::getDetails)
 				.filter(Optional::isPresent)
@@ -35,8 +35,8 @@ public class ResetDailyChores {
 		return task.id;
 	}
 
-	public void cheatReset() {
-		asana.getTasksBySection("169102700015582").stream()
+	public void resetSection(String sectionId) {
+		asana.getTasksBySection(sectionId).stream()
 				.map(this::getDetails)
 				.filter(Optional::isPresent)
 				.map(Optional::get)
