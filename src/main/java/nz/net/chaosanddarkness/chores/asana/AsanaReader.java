@@ -5,7 +5,6 @@ import static java.util.Optional.empty;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 
 import com.asana.Client;
@@ -14,12 +13,11 @@ import com.asana.models.Section;
 import com.asana.models.Task;
 import com.asana.models.User;
 import com.asana.models.Workspace;
-import com.google.api.client.util.DateTime;
 
-public class AsanaConnection {
+public class AsanaReader {
 	private final Client asana;
 
-	public AsanaConnection(String token) {
+	public AsanaReader(String token) {
 		asana = Client.accessToken(token);
 	}
 
@@ -75,7 +73,7 @@ public class AsanaConnection {
 	}
 
 	public User getUser() throws IOException {
-		return asana.users.findAll().execute().stream().filter(AsanaConnection::itMe).findFirst().get();
+		return asana.users.findAll().execute().stream().filter(AsanaReader::itMe).findFirst().get();
 	}
 	private static boolean itMe(User user) {
 		return "Jane Nicholson".equalsIgnoreCase(user.name);
@@ -134,13 +132,5 @@ public class AsanaConnection {
 		} catch (IOException e) {
 		}
 		return empty();
-	}
-
-	public void refreshTask(String taskid) {
-		String dueOn = new DateTime(true, new Date().getTime(), 0).toStringRfc3339();
-		try {
-			asana.tasks.update(String.format("%s?completed=false&due_on=%s", taskid, dueOn)).execute();
-		} catch (IOException e) {
-		}
 	}
 }

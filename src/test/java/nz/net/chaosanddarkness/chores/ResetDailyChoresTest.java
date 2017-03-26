@@ -18,7 +18,8 @@ import org.mockito.junit.MockitoRule;
 import com.asana.models.Task;
 import com.google.common.collect.Lists;
 
-import nz.net.chaosanddarkness.chores.asana.AsanaConnection;
+import nz.net.chaosanddarkness.chores.asana.AsanaReader;
+import nz.net.chaosanddarkness.chores.asana.AsanaUpdater;
 
 public class ResetDailyChoresTest {
 
@@ -30,11 +31,14 @@ public class ResetDailyChoresTest {
 	private static Collection<Task> TASKS;
 
 	@Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
-	@Mock private AsanaConnection asana;
+	@Mock private AsanaReader asana;
+	@Mock private AsanaUpdater asanaUpdater;
 
 	private final String WORKSPACE = "Chaos and Darkness";
 	private final String PROJECT = "Chores";
 	private final String SECTION = "Daily";
+
+	private ResetDailyChores chores;
 
 	@BeforeClass
 	public static void setUp() {
@@ -54,18 +58,18 @@ public class ResetDailyChoresTest {
 		when(asana.getTask(TASK3.id)).thenReturn(Optional.of(TASK3_DETAIL));
 		when(asana.getTask(TASK4.id)).thenReturn(Optional.of(TASK4_DETAIL));
 		when(asana.getTask(TASK5.id)).thenReturn(Optional.of(TASK5_DETAIL));
+
+		chores = new ResetDailyChores(asana, asanaUpdater);
 	}
 
 	@Test
 	public void ask_asana_for_daily_tasks() {
-		ResetDailyChores chores = new ResetDailyChores(asana);
 		chores.getSectionId("Daily");
 		verify(asana).getTasks(WORKSPACE, PROJECT, SECTION);
 	}
 
 	@Test
 	public void retrieve_tasks_returned_by_asana() {
-		ResetDailyChores chores = new ResetDailyChores(asana);
 		chores.getSectionId("Daily");
 		verify(asana).getTask(TASK1.id);
 		verify(asana).getTask(TASK2.id);
@@ -76,10 +80,9 @@ public class ResetDailyChoresTest {
 
 	@Test
 	public void update_tasks_returned_by_asana_if_completed() {
-		ResetDailyChores chores = new ResetDailyChores(asana);
 		chores.getSectionId("Daily");
-		verify(asana).refreshTask(TASK2.id);
-		verify(asana).refreshTask(TASK3.id);
-		verify(asana).refreshTask(TASK5.id);
+		verify(asanaUpdater).refreshTask(TASK2.id);
+		verify(asanaUpdater).refreshTask(TASK3.id);
+		verify(asanaUpdater).refreshTask(TASK5.id);
 	}
 }

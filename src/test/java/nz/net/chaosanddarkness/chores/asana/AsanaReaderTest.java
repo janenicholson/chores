@@ -16,7 +16,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.asana.models.Project;
@@ -24,12 +23,13 @@ import com.asana.models.Section;
 import com.asana.models.Task;
 import com.asana.models.Workspace;
 
-public class AsanaConnectionTest {
+public class AsanaReaderTest {
 
-	AsanaConnection asana;
+	private AsanaReader asana;
+
 	@Before
 	public void setup() {
-		asana = new AsanaConnection(System.getProperty("ASANA_TOKEN"));
+		asana = new AsanaReader(System.getProperty("ASANA_TOKEN"));
 	}
 
 	@Test
@@ -121,14 +121,5 @@ public class AsanaConnectionTest {
 		Optional<Task> task = asana.getTask("303028668279780");
 		assertThat(task, isPresent());
 		assertThat(task.get().name, is("Water plants"));
-	}
-
-	@Test @Ignore // can't do this because it's modifying a real project in use. idiot
-	public void refresh_task() {
-		asana.refreshTask("303089274983564");
-		Optional<Task> task = asana.getTask("303089274983564");
-		assertThat(task, isPresent());
-		assertThat(task.get().name, is("Test task"));
-		assertThat(task.get().completed, is(false));
 	}
 }
