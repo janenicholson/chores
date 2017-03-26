@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -13,7 +13,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.asana.models.Task;
-import com.google.api.client.util.DateTime;
 
 public class AsanaUpdaterTest {
 
@@ -28,7 +27,7 @@ public class AsanaUpdaterTest {
 
 	@Test @Ignore // can't do this because it's modifying a real project in use. idiot
 	public void refresh_task() throws IOException {
-		updater.refreshTask("303089274983564", new DateTime(true, new Date().getTime(), 0));
+		updater.refreshTask("303089274983564", LocalDate.now());
 		Optional<Task> task = reader.getTask("303089274983564");
 		assertThat(task, isPresent());
 		assertThat(task.get().name, is("Test task"));

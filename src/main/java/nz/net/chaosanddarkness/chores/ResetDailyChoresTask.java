@@ -1,11 +1,10 @@
 package nz.net.chaosanddarkness.chores;
 
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import com.asana.models.Task;
-import com.google.api.client.util.DateTime;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -41,6 +40,6 @@ public class ResetDailyChoresTask {
 	}
 
 	private void dueToday(String taskId) {
-		asanaUpdater.refreshTask(taskId, new DateTime(true, new Date().getTime(), 0));
+		asanaUpdater.refreshTask(taskId, LocalDate.now());
 	}
 }

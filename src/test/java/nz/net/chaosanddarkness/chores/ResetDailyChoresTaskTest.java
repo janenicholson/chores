@@ -1,13 +1,13 @@
 package nz.net.chaosanddarkness.chores;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -20,7 +20,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import com.asana.models.Task;
-import com.google.api.client.util.DateTime;
 import com.google.common.collect.Lists;
 
 import nz.net.chaosanddarkness.chores.asana.AsanaReader;
@@ -83,9 +82,9 @@ public class ResetDailyChoresTaskTest {
 	@Test
 	public void update_tasks_returned_by_asana_if_completed() throws IOException {
 		chores.resetSection(SECTION_ID);
-		verify(asanaUpdater).refreshTask(argThat(is(TASK2.id)), any(DateTime.class));
-		verify(asanaUpdater).refreshTask(argThat(is(TASK3.id)), any(DateTime.class));
-		verify(asanaUpdater).refreshTask(argThat(is(TASK5.id)), any(DateTime.class));
+		verify(asanaUpdater).refreshTask(argThat(is(TASK2.id)), argThat(is(LocalDate.now())));
+		verify(asanaUpdater).refreshTask(argThat(is(TASK3.id)), argThat(is(LocalDate.now())));
+		verify(asanaUpdater).refreshTask(argThat(is(TASK5.id)), argThat(is(LocalDate.now())));
 		verifyNoMoreInteractions(asanaUpdater);
 	}
 }
