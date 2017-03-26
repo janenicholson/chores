@@ -122,4 +122,10 @@ public class AsanaReaderTest {
 		assertThat(task, isPresent());
 		assertThat(task.get().name, is("Water plants"));
 	}
+
+	@Test
+	public void retrieve_id_for_section_project_and_workspace() {
+		String sectionId = asana.getSectionId("Chaos and Darkness", "Chores", "Daily");
+		assertThat(sectionId, is("169102700015582"));
+	}
 }

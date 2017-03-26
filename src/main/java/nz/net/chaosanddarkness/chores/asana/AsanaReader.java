@@ -88,7 +88,7 @@ public class AsanaReader {
 	}
 
 	public Optional<Section> getSection(Project project, String name) {
-		Optional<Section> section = getSections(project).stream().filter((s)->sectionName(s, name)).findFirst();
+		Optional<Section> section = getSections(project).stream().filter((s)->sectionNamed(s, name)).findFirst();
 		try {
 			return Optional.of(asana.sections.findById(section.get().id).execute());
 		} catch (IOException e) {
@@ -96,7 +96,7 @@ public class AsanaReader {
 		return empty();
 	}
 
-	private boolean sectionName(Section section, String name) {
+	private boolean sectionNamed(Section section, String name) {
 		return name.equalsIgnoreCase(section.name);
 	}
 
@@ -132,5 +132,19 @@ public class AsanaReader {
 		} catch (IOException e) {
 		}
 		return empty();
+	}
+
+	public String getSectionId(String workspaceName, String projectName, String sectionName) {
+		Optional<Workspace> workspace = getWorkspace(workspaceName);
+		if (workspace.isPresent()) {
+			Optional<Project> project = getProject(workspace.get(), projectName);
+			if (project.isPresent()) {
+				Optional<Section> section = getSection(project.get(), sectionName);
+				if (section.isPresent()) {
+					return section.get().id;
+				}
+			}
+		}
+		return null;
 	}
 }
