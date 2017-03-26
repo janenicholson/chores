@@ -3,35 +3,46 @@ package nz.net.chaosanddarkness.chores.asana;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
+import com.asana.Client;
 import com.asana.models.Task;
+import com.asana.requests.ItemRequest;
+import com.asana.resources.Tasks;
 
 public class AsanaUpdaterTest {
 
-	private AsanaReader reader;
+	@Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
+	@Mock Client asanaClient;
+	@Mock Tasks tasks;
+	@Mock private ItemRequest<Task> itemRequest;
+
 	private AsanaUpdater updater;
+	private LocalDate DUE_DATE = LocalDate.of(2013, 5, 16);
 
 	@Before
 	public void setup() {
-		reader = new AsanaReader(System.getProperty("ASANA_TOKEN"));
-		updater = new AsanaUpdater(System.getProperty("ASANA_TOKEN"));
+		updater = new AsanaUpdater(asanaClient);
+		asanaClient.tasks = tasks;
+		when(tasks.update(anyString())).thenReturn(itemRequest);
 	}
 
-	@Test @Ignore // can't do this because it's modifying a real project in use. idiot
+	@Test
 	public void refresh_task() throws IOException {
-		updater.refreshTask("303089274983564", LocalDate.now());
-		Optional<Task> task = reader.getTask("303089274983564");
-		assertThat(task, isPresent());
-		assertThat(task.get().name, is("Test task"));
-		assertThat(task.get().completed, is(false));
+		updater.refreshTask("303089274983564", DUE_DATE);
+		verify(tasks).update("303089274983564?completed=false&due_on=2013-05-16");
 	}
-
 }

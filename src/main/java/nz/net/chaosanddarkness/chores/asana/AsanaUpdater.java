@@ -13,6 +13,11 @@ public class AsanaUpdater {
 		asana = Client.accessToken(token);
 	}
 
+	// provided for tests that don't want to update a live thing
+	AsanaUpdater(Client asana) {
+		this.asana = asana;
+	}
+
 	public void refreshTask(String taskId, LocalDate dueDate) {
 		String dueOn = dueDate.format(DateTimeFormatter.ISO_DATE);
 		try {
