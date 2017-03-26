@@ -14,5 +14,6 @@ public class ChoreResetConfiguration {
 	private String dailySectionId;
 	private String weeklySectionId;
 	private String monthlySectionId;
+	private String seasonalSectionId;
 	private String annualSectionId;
 }
