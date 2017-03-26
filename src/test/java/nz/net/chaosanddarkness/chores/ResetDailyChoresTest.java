@@ -1,7 +1,11 @@
 package nz.net.chaosanddarkness.chores;
 
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
@@ -16,6 +20,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import com.asana.models.Task;
+import com.google.api.client.util.DateTime;
 import com.google.common.collect.Lists;
 
 import nz.net.chaosanddarkness.chores.asana.AsanaReader;
@@ -29,6 +34,7 @@ public class ResetDailyChoresTest {
 	private static Task TASK4, TASK4_DETAIL;
 	private static Task TASK5, TASK5_DETAIL;
 	private static Collection<Task> TASKS;
+	private static final String SECTION_ID = "idofsomekind";
 
 	@Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock private AsanaReader asana;
@@ -52,7 +58,7 @@ public class ResetDailyChoresTest {
 
 	@Before
 	public void setup() {
-		when(asana.getTasks(anyString(), anyString(), anyString())).thenReturn(TASKS);
+		when(asana.getTasksBySection(SECTION_ID)).thenReturn(TASKS);
 		when(asana.getTask(TASK1.id)).thenReturn(Optional.of(TASK1_DETAIL));
 		when(asana.getTask(TASK2.id)).thenReturn(Optional.of(TASK2_DETAIL));
 		when(asana.getTask(TASK3.id)).thenReturn(Optional.of(TASK3_DETAIL));
@@ -64,13 +70,13 @@ public class ResetDailyChoresTest {
 
 	@Test
 	public void ask_asana_for_daily_tasks() {
-		chores.getSectionId("Daily");
-		verify(asana).getTasks(WORKSPACE, PROJECT, SECTION);
+		chores.resetSection(SECTION_ID);
+		verify(asana).getTasksBySection(SECTION_ID);
 	}
 
 	@Test
 	public void retrieve_tasks_returned_by_asana() {
-		chores.getSectionId("Daily");
+		chores.resetSection(SECTION_ID);
 		verify(asana).getTask(TASK1.id);
 		verify(asana).getTask(TASK2.id);
 		verify(asana).getTask(TASK3.id);
@@ -80,9 +86,10 @@ public class ResetDailyChoresTest {
 
 	@Test
 	public void update_tasks_returned_by_asana_if_completed() {
-		chores.getSectionId("Daily");
-		verify(asanaUpdater).refreshTask(TASK2.id);
-		verify(asanaUpdater).refreshTask(TASK3.id);
-		verify(asanaUpdater).refreshTask(TASK5.id);
+		chores.resetSection(SECTION_ID);
+		verify(asanaUpdater).refreshTask(argThat(is(TASK2.id)), any(DateTime.class));
+		verify(asanaUpdater).refreshTask(argThat(is(TASK3.id)), any(DateTime.class));
+		verify(asanaUpdater).refreshTask(argThat(is(TASK5.id)), any(DateTime.class));
+		verifyNoMoreInteractions(asanaUpdater);
 	}
 }

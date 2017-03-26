@@ -1,8 +1,10 @@
 package nz.net.chaosanddarkness.chores;
 
+import java.util.Date;
 import java.util.Optional;
 
 import com.asana.models.Task;
+import com.google.api.client.util.DateTime;
 
 import lombok.RequiredArgsConstructor;
 import nz.net.chaosanddarkness.chores.asana.AsanaReader;
@@ -12,17 +14,15 @@ import nz.net.chaosanddarkness.chores.asana.AsanaUpdater;
 public class ResetDailyChores {
 	private final AsanaReader asanaReader;
 	private final AsanaUpdater asanaUpdater;
-	private final String WORKSPACE = "Chaos and Darkness";
-	private final String PROJECT = "Chores";
 
-	public void getSectionId(String string) {
-		asanaReader.getTasks(WORKSPACE, PROJECT, "Daily").stream()
+	public void resetSection(String sectionId) {
+		asanaReader.getTasksBySection(sectionId).stream()
 				.map(this::getDetails)
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.filter(this::isComplete)
 				.map(this::getId)
-				.forEach(asanaUpdater::refreshTask);
+				.forEach(this::dueToday);
 	}
 
 	private Optional<Task> getDetails(Task task) {
@@ -37,13 +37,7 @@ public class ResetDailyChores {
 		return task.id;
 	}
 
-	public void resetSection(String sectionId) {
-		asanaReader.getTasksBySection(sectionId).stream()
-				.map(this::getDetails)
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-				.filter(this::isComplete)
-				.map(this::getId)
-				.forEach(asanaUpdater::refreshTask);
+	private void dueToday(String taskId) {
+		asanaUpdater.refreshTask(taskId, new DateTime(true, new Date().getTime(), 0));
 	}
 }

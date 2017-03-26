@@ -1,7 +1,6 @@
 package nz.net.chaosanddarkness.chores.asana;
 
 import java.io.IOException;
-import java.util.Date;
 
 import com.asana.Client;
 import com.google.api.client.util.DateTime;
@@ -13,10 +12,10 @@ public class AsanaUpdater {
 		asana = Client.accessToken(token);
 	}
 
-	public void refreshTask(String taskid) {
-		String dueOn = new DateTime(true, new Date().getTime(), 0).toStringRfc3339();
+	public void refreshTask(String taskId, DateTime dueDate) {
+		String dueOn = dueDate.toStringRfc3339();
 		try {
-			asana.tasks.update(String.format("%s?completed=false&due_on=%s", taskid, dueOn)).execute();
+			asana.tasks.update(String.format("%s?completed=false&due_on=%s", taskId, dueOn)).execute();
 		} catch (IOException e) {
 		}
 	}
