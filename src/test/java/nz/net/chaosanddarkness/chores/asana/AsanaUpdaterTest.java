@@ -4,6 +4,7 @@ import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class AsanaUpdaterTest {
 	}
 
 	@Test @Ignore // can't do this because it's modifying a real project in use. idiot
-	public void refresh_task() {
+	public void refresh_task() throws IOException {
 		updater.refreshTask("303089274983564", new DateTime(true, new Date().getTime(), 0));
 		Optional<Task> task = reader.getTask("303089274983564");
 		assertThat(task, isPresent());

@@ -2,12 +2,12 @@ package nz.net.chaosanddarkness.chores;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -40,10 +40,6 @@ public class ResetDailyChoresTest {
 	@Mock private AsanaReader asana;
 	@Mock private AsanaUpdater asanaUpdater;
 
-	private final String WORKSPACE = "Chaos and Darkness";
-	private final String PROJECT = "Chores";
-	private final String SECTION = "Daily";
-
 	private ResetDailyChores chores;
 
 	@BeforeClass
@@ -57,7 +53,7 @@ public class ResetDailyChoresTest {
 	}
 
 	@Before
-	public void setup() {
+	public void setup() throws IOException {
 		when(asana.getTasksBySection(SECTION_ID)).thenReturn(TASKS);
 		when(asana.getTask(TASK1.id)).thenReturn(Optional.of(TASK1_DETAIL));
 		when(asana.getTask(TASK2.id)).thenReturn(Optional.of(TASK2_DETAIL));
@@ -69,13 +65,13 @@ public class ResetDailyChoresTest {
 	}
 
 	@Test
-	public void ask_asana_for_daily_tasks() {
+	public void ask_asana_for_daily_tasks() throws IOException {
 		chores.resetSection(SECTION_ID);
 		verify(asana).getTasksBySection(SECTION_ID);
 	}
 
 	@Test
-	public void retrieve_tasks_returned_by_asana() {
+	public void retrieve_tasks_returned_by_asana() throws IOException {
 		chores.resetSection(SECTION_ID);
 		verify(asana).getTask(TASK1.id);
 		verify(asana).getTask(TASK2.id);
@@ -85,7 +81,7 @@ public class ResetDailyChoresTest {
 	}
 
 	@Test
-	public void update_tasks_returned_by_asana_if_completed() {
+	public void update_tasks_returned_by_asana_if_completed() throws IOException {
 		chores.resetSection(SECTION_ID);
 		verify(asanaUpdater).refreshTask(argThat(is(TASK2.id)), any(DateTime.class));
 		verify(asanaUpdater).refreshTask(argThat(is(TASK3.id)), any(DateTime.class));

@@ -1,5 +1,7 @@
 package nz.net.chaosanddarkness.chores;
 
+import java.io.IOException;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
@@ -10,7 +12,11 @@ public class FindSectionIdHandler implements RequestHandler<SectionIdFinderReque
     @Override
     public String handleRequest(SectionIdFinderRequest config, Context context) {
         AsanaReader asanaReader = new AsanaReader(config.getToken());
-        return asanaReader.getSectionId(config.getWorkspaceName(), config.getProjectName(), config.getSectionName());
+        try {
+            return asanaReader.getSectionId(config.getWorkspaceName(), config.getProjectName(), config.getSectionName());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

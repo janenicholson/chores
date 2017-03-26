@@ -1,5 +1,7 @@
 package nz.net.chaosanddarkness.chores;
 
+import java.io.IOException;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
@@ -10,9 +12,13 @@ public class ChoreResetHandler implements RequestHandler<ChoreResetConfiguration
 
     @Override
     public Void handleRequest(ChoreResetConfiguration config, Context context) {
-        AsanaReader asanaReader = new AsanaReader(config.getToken());
-        AsanaUpdater asanaUpdater = new AsanaUpdater(config.getToken());
-        new ResetDailyChores(asanaReader, asanaUpdater).resetSection(config.getDailySectionId());
+        try {
+            AsanaReader asanaReader = new AsanaReader(config.getToken());
+            AsanaUpdater asanaUpdater = new AsanaUpdater(config.getToken());
+            new ResetDailyChores(asanaReader, asanaUpdater).resetSection(config.getDailySectionId());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 

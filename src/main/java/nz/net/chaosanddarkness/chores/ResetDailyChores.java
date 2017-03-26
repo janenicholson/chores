@@ -1,5 +1,6 @@
 package nz.net.chaosanddarkness.chores;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import com.asana.models.Task;
 import com.google.api.client.util.DateTime;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import nz.net.chaosanddarkness.chores.asana.AsanaReader;
 import nz.net.chaosanddarkness.chores.asana.AsanaUpdater;
 
@@ -15,7 +17,7 @@ public class ResetDailyChores {
 	private final AsanaReader asanaReader;
 	private final AsanaUpdater asanaUpdater;
 
-	public void resetSection(String sectionId) {
+	public void resetSection(String sectionId) throws IOException {
 		asanaReader.getTasksBySection(sectionId).stream()
 				.map(this::getDetails)
 				.filter(Optional::isPresent)
@@ -25,6 +27,7 @@ public class ResetDailyChores {
 				.forEach(this::dueToday);
 	}
 
+	@SneakyThrows
 	private Optional<Task> getDetails(Task task) {
 		return asanaReader.getTask(task.id);
 	}

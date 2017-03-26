@@ -33,30 +33,25 @@ public class AsanaReaderTest {
 	}
 
 	@Test
-	public void retrieve_user() throws IOException {
-		assertThat(asana.getUser(), notNullValue());
-	}
-
-	@Test
 	public void retrieve_workspaces() throws IOException {
 		assertThat(asana.getWorkspaces(), not(emptyCollectionOf(Workspace.class)));
 	}
 
 	@Test
-	public void retrieve_workspace() {
+	public void retrieve_workspace() throws IOException {
 		Optional<Workspace> workspace = asana.getWorkspace("Chaos and Darkness");
 		assertThat(workspace, isPresent());
 		assertThat(workspace.get().name, is("Chaos and Darkness"));
 	}
 
 	@Test
-	public void retrieve_projects() {
+	public void retrieve_projects() throws IOException {
 		Collection<Project> projects = asana.getProjects(asana.getWorkspace("Chaos and Darkness").get());
 		assertThat(projects, not(emptyCollectionOf(Project.class)));
 	}
 
 	@Test
-	public void retrieve_project() {
+	public void retrieve_project() throws IOException {
 		Workspace workspace = asana.getWorkspace("Chaos and Darkness").get();
 		Optional<Project> project = asana.getProject(workspace, "Chores");
 		assertThat(project, isPresent());
@@ -66,14 +61,14 @@ public class AsanaReaderTest {
 	}
 
 	@Test
-	public void retrieve_sections() {
+	public void retrieve_sections() throws IOException {
 		Optional<Project> project = asana.getProject(asana.getWorkspace("Chaos and Darkness").get(), "Chores");
 		Collection<Section> section = asana.getSections(project.get());
 		assertThat(section, not(emptyCollectionOf(Section.class)));
 	}
 
 	@Test
-	public void retrieve_section() {
+	public void retrieve_section() throws IOException {
 		Optional<Project> project = asana.getProject(asana.getWorkspace("Chaos and Darkness").get(), "Chores");
 		Optional<Section> section = asana.getSection(project.get(), "Daily");
 		assertThat(section, isPresent());
@@ -97,34 +92,14 @@ public class AsanaReaderTest {
 	}
 
 	@Test
-	public void retrieve_tasks_for_project() throws IOException {
-		Collection<Task> tasks = asana.getTasks(asana.getProject(asana.getWorkspace("Chaos and Darkness").get(), "Chores").get());
-		assertThat(tasks, not(emptyCollectionOf(Task.class)));
-	}
-
-	@Test
-	public void retrieve_tasks_for_section() throws IOException {
-		Optional<Project> project = asana.getProject(asana.getWorkspace("Chaos and Darkness").get(), "Chores");
-		Optional<Section> section = asana.getSection(project.get(), "Daily");
-		Collection<Task> tasks = asana.getTasks(section.get());
-		assertThat(tasks, not(emptyCollectionOf(Task.class)));
-	}
-
-	@Test
-	public void retrieve_tasks_for_section_project_and_workspace() {
-		Collection<Task> tasks = asana.getTasks("Chaos and Darkness", "Chores", "Daily");
-		assertThat(tasks.size(), is(5));
-	}
-
-	@Test
-	public void retrieve_task_detail_by_id() {
+	public void retrieve_task_detail_by_id() throws IOException {
 		Optional<Task> task = asana.getTask("303028668279780");
 		assertThat(task, isPresent());
 		assertThat(task.get().name, is("Water plants"));
 	}
 
 	@Test
-	public void retrieve_id_for_section_project_and_workspace() {
+	public void retrieve_id_for_section_project_and_workspace() throws IOException {
 		String sectionId = asana.getSectionId("Chaos and Darkness", "Chores", "Daily");
 		assertThat(sectionId, is("169102700015582"));
 	}
