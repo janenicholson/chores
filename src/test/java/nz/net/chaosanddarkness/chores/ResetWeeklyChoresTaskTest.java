@@ -53,6 +53,12 @@ public class ResetWeeklyChoresTaskTest {
 	}
 
 	@Test
+	public void march_28_2017_is_not_a_monday() {
+		given_date_is(LocalDate.of(2017, 03, 28));
+		assertThat(resetWeeklyChoresTask.isMonday(), is(false));
+	}
+
+	@Test
 	public void retrieve_tasks_for_section_from_asana() throws IOException {
 		given_date_is(LocalDate.of(2017, 03, 27));
 		resetWeeklyChoresTask.resetSection(SECTION_ID);
