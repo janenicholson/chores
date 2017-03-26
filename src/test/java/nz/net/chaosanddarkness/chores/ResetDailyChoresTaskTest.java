@@ -26,7 +26,7 @@ import com.google.common.collect.Lists;
 import nz.net.chaosanddarkness.chores.asana.AsanaReader;
 import nz.net.chaosanddarkness.chores.asana.AsanaUpdater;
 
-public class ResetDailyChoresTest {
+public class ResetDailyChoresTaskTest {
 
 	private static Task TASK1, TASK1_DETAIL;
 	private static Task TASK2, TASK2_DETAIL;
@@ -40,7 +40,7 @@ public class ResetDailyChoresTest {
 	@Mock private AsanaReader asana;
 	@Mock private AsanaUpdater asanaUpdater;
 
-	private ResetDailyChores chores;
+	private ResetDailyChoresTask chores;
 
 	@BeforeClass
 	public static void setUp() {
@@ -61,7 +61,7 @@ public class ResetDailyChoresTest {
 		when(asana.getTask(TASK4.id)).thenReturn(Optional.of(TASK4_DETAIL));
 		when(asana.getTask(TASK5.id)).thenReturn(Optional.of(TASK5_DETAIL));
 
-		chores = new ResetDailyChores(asana, asanaUpdater);
+		chores = new ResetDailyChoresTask(asana, asanaUpdater);
 	}
 
 	@Test

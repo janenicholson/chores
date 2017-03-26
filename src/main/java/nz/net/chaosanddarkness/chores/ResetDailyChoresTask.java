@@ -13,7 +13,7 @@ import nz.net.chaosanddarkness.chores.asana.AsanaReader;
 import nz.net.chaosanddarkness.chores.asana.AsanaUpdater;
 
 @RequiredArgsConstructor
-public class ResetDailyChores {
+public class ResetDailyChoresTask {
 	private final AsanaReader asanaReader;
 	private final AsanaUpdater asanaUpdater;
 
