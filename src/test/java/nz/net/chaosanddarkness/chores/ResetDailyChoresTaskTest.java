@@ -1,15 +1,13 @@
 package nz.net.chaosanddarkness.chores;
 
+import static nz.net.chaosanddarkness.chores.asana.TestData.*;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,21 +17,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import com.asana.models.Task;
-import com.google.common.collect.Lists;
-
 import nz.net.chaosanddarkness.chores.asana.AsanaReader;
 import nz.net.chaosanddarkness.chores.asana.AsanaUpdater;
+import nz.net.chaosanddarkness.chores.asana.TestData;
 
 public class ResetDailyChoresTaskTest {
-
-	private static Task TASK1, TASK1_DETAIL;
-	private static Task TASK2, TASK2_DETAIL;
-	private static Task TASK3, TASK3_DETAIL;
-	private static Task TASK4, TASK4_DETAIL;
-	private static Task TASK5, TASK5_DETAIL;
-	private static Collection<Task> TASKS;
-	private static final String SECTION_ID = "idofsomekind";
 
 	@Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock private AsanaReader asana;
@@ -41,24 +29,16 @@ public class ResetDailyChoresTaskTest {
 
 	private ResetDailyChoresTask chores;
 
+	private TestData testData = new TestData();
+
 	@BeforeClass
 	public static void setUp() {
-		TASK1 = new Task(); TASK1.id = "303028623664505"; TASK1_DETAIL = new Task(); TASK1_DETAIL.id = "303028623664505";
-		TASK2 = new Task(); TASK2.id = "303028668279780"; TASK2_DETAIL = new Task(); TASK2_DETAIL.id = "303028668279780"; TASK2_DETAIL.completed = true;
-		TASK3 = new Task(); TASK3.id = "169102700015593"; TASK3_DETAIL = new Task(); TASK3_DETAIL.id = "169102700015593"; TASK3_DETAIL.completed = true;
-		TASK4 = new Task(); TASK4.id = "169102700015590"; TASK4_DETAIL = new Task(); TASK4_DETAIL.id = "169102700015590";
-		TASK5 = new Task(); TASK5.id = "169102700015584"; TASK5_DETAIL = new Task(); TASK5_DETAIL.id = "169102700015584"; TASK5_DETAIL.completed = true;
-		TASKS = Lists.newArrayList(TASK1, TASK2, TASK3, TASK4, TASK5);
+		TestData.setUp();
 	}
 
 	@Before
 	public void setup() throws IOException {
-		when(asana.getTasksBySection(SECTION_ID)).thenReturn(TASKS);
-		when(asana.getTask(TASK1.id)).thenReturn(Optional.of(TASK1_DETAIL));
-		when(asana.getTask(TASK2.id)).thenReturn(Optional.of(TASK2_DETAIL));
-		when(asana.getTask(TASK3.id)).thenReturn(Optional.of(TASK3_DETAIL));
-		when(asana.getTask(TASK4.id)).thenReturn(Optional.of(TASK4_DETAIL));
-		when(asana.getTask(TASK5.id)).thenReturn(Optional.of(TASK5_DETAIL));
+		testData.setup(asana, asanaUpdater);
 
 		chores = new ResetDailyChoresTask(asana, asanaUpdater);
 	}

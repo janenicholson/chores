@@ -1,15 +1,11 @@
 package nz.net.chaosanddarkness.chores.asana;
 
-import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Rule;

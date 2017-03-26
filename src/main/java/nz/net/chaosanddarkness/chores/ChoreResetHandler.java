@@ -1,5 +1,7 @@
 package nz.net.chaosanddarkness.chores;
 
+import static java.time.LocalDate.now;
+
 import java.io.IOException;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -16,6 +18,10 @@ public class ChoreResetHandler implements RequestHandler<ChoreResetConfiguration
             AsanaReader asanaReader = new AsanaReader(config.getToken());
             AsanaUpdater asanaUpdater = new AsanaUpdater(config.getToken());
             new ResetDailyChoresTask(asanaReader, asanaUpdater).resetSection(config.getDailySectionId());
+            ResetWeeklyChoresTask resetWeeklyChoresTask = new ResetWeeklyChoresTask(asanaReader, asanaUpdater, now());
+            if (resetWeeklyChoresTask.isMonday()) {
+                resetWeeklyChoresTask.resetSection(config.getWeeklySectionId());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
