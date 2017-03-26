@@ -5,11 +5,11 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 import nz.net.chaosanddarkness.chores.asana.AsanaConnection;
 
-public class ChoreResetHandler implements RequestHandler<String, Void> {
+public class ChoreResetHandler implements RequestHandler<ChoreResetConfiguration, Void> {
 
     @Override
-    public Void handleRequest(String token, Context context) {
-        new ResetDailyChores(new AsanaConnection(token)).cheatReset();
+    public Void handleRequest(ChoreResetConfiguration config, Context context) {
+        new ResetDailyChores(new AsanaConnection(config.getToken())).cheatReset();
         return null;
     }
 

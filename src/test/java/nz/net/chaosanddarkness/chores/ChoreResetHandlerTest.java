@@ -12,11 +12,11 @@ import com.amazonaws.services.lambda.runtime.Context;
  */
 public class ChoreResetHandlerTest {
 
-    private static String input;
+    private static ChoreResetConfiguration input;
 
     @BeforeClass
     public static void createInput() throws IOException {
-        input = "NotARealToken";
+        input = ChoreResetConfiguration.builder().token("NotARealToken").build();
     }
 
     private Context createContext() {
